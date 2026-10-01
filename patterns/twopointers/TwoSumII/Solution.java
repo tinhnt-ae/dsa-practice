@@ -1,3 +1,8 @@
 public class Solution {
-    // TODO: implement TwoSumII
+    public int[] twoSum(int[] numbers, int target) {
+        
+        // Two pointers approach
+
+        throw new IllegalArgumentException("No solution found");
+    }
 }
