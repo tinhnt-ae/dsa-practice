@@ -79,5 +79,18 @@ Xem danh sách lệnh:
 make help
 ```
 
-Khi một case sai, output hiển thị expected và actual. `make run` hoặc
-`make run-all` cũng trả mã lỗi khác 0, nên có thể dùng cùng Git hook hoặc CI.
+## Bài tập Java core
+
+Các bài Java không thuộc DSA được đặt riêng trong `exercises/java/`.
+Ví dụ, chạy bài `try-with-resources` bằng lệnh:
+
+```sh
+make run-exercise EXERCISE=try-with-resources
+```
+
+Mở `Exercise.java` trong thư mục bài tập, xóa phần nằm giữa hai
+comment `COLD WRITE`, rồi tự viết lại và chạy lệnh trên.
+
+Khi một case sai, output hiển thị expected và actual. `make run`,
+`make run-all` và `make run-exercise` trả mã lỗi khác 0, nên có thể
+dùng cùng Git hook hoặc CI.

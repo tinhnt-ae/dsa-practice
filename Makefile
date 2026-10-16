@@ -2,15 +2,17 @@ SHELL := /bin/sh
 
 BUILD_DIR := .build
 PATTERNS_DIR := patterns
+EXERCISES_DIR := exercises/java
 TEST_RUNNER := utils/TestRunner.java
 
-.PHONY: help create run run-all clean
+.PHONY: help create run run-all run-exercise clean
 
 help:
 	@echo "Commands:"
 	@echo "  make create PATTERN=<pattern> PROBLEM=<ProblemName>"
 	@echo "  make run PATTERN=<pattern> PROBLEM=<ProblemName>"
 	@echo "  make run-all"
+	@echo "  make run-exercise EXERCISE=<exercise-name>"
 	@echo "  make clean"
 
 create:
@@ -93,6 +95,29 @@ run-all:
 		fi; \
 	done; \
 	exit "$$status"
+
+run-exercise:
+	@set -eu; \
+	exercise='$(EXERCISE)'; \
+	if [ -z "$$exercise" ]; then \
+		echo "Usage: make run-exercise EXERCISE=<exercise-name>" >&2; \
+		exit 2; \
+	fi; \
+	if ! printf '%s' "$$exercise" | grep -Eq '^[a-z0-9][a-z0-9-]*$$'; then \
+		echo "Invalid EXERCISE: use lowercase letters, numbers, or hyphens" >&2; \
+		exit 2; \
+	fi; \
+	dir='$(EXERCISES_DIR)'/"$$exercise"; \
+	if [ ! -f "$$dir/Exercise.java" ] || [ ! -f "$$dir/ExerciseTest.java" ]; then \
+		echo "Exercise is incomplete or does not exist: $$dir" >&2; \
+		exit 2; \
+	fi; \
+	out='$(BUILD_DIR)'/exercises/"$$exercise"; \
+	mkdir -p "$$out"; \
+	find "$$out" -type f -name '*.class' -delete; \
+	sources=$$(find "$$dir" -maxdepth 1 -type f -name '*.java' -print | sort); \
+	javac -d "$$out" '$(TEST_RUNNER)' $$sources; \
+	java -cp "$$out" ExerciseTest
 
 clean:
 	@find '$(BUILD_DIR)' -type f -name '*.class' -delete 2>/dev/null || true
